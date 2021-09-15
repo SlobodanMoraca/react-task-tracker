@@ -1,38 +1,50 @@
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 
 function App() {
+  const [showAddTask, setShowAddTask] = useState(false);
 
-  const [showAddTask, setShowAddTask] = useState(false)
+  const [tasks, setTasks]= useState([ ]);
 
-  const [tasks, setTasks]= useState([
-      {
-        id: 1,
-        text: 'Idi kod doktora',
-        day: 'Ponedeljak u 12.30',
-        reminder: true,
-    },
-    {
-        id: 2,
-        text: 'Sastanak na poslu',
-        day: 'Petak u 17.00',
-        reminder: true,
-    },
-    {
-        id: 3,
-        text: 'Cas engleskog jezika',
-        day: 'Ponedeljak-Petak u 06.00',
-        reminder: false,
-    }
-  ])
+  useEffect(() =>{
+    fetch('https://react-task-tracker-77f9f-default-rtdb.firebaseio.com/tasks.json'
+    ).then (res =>{
+      return res.json();
+    }).then(data =>{
+      const takks= [];
+
+      for(const key in data){
+        const takk ={
+          id: key,
+          ...data[key]
+        };
+
+        takks.push(takk)
+      }
+      setTasks(takks)
+    });
+  }, []);
+
+
 
   //Add Task
 
   const addTask = (task) =>{
+    fetch ('https://react-task-tracker-77f9f-default-rtdb.firebaseio.com/tasks.json',
+    {
+      method: 'POST',
+      body: JSON.stringify(task),
+      headers:{   
+          'Content-Type': 'aplication/json'
+      }
+    }
+    );
+
+
     const id = Math.floor(Math.random() * 10000)+1
 
     const newTask = {id, ...task}
