@@ -1,15 +1,18 @@
 import classes from './Header.module.css'
+import { useLocation } from 'react-router'
 import Button from './Button'
 
 const Header = ({title, onAdd, showAdd}) => {
+    const location = useLocation()
 
     return (
         <header className={classes.header}>
             <h1>{title}</h1>
-            <Button color={showAdd ? 'red' : 'green'} 
+            {location.pathname==='/' && (<Button color={showAdd ? 'red' : 'green'} 
                     text={showAdd ? 'Close' : 'Add'} 
                     onClick={onAdd}
             />
+            )}
         </header>
     )
 }
